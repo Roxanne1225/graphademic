@@ -7,7 +7,7 @@ const ResearchersContainer = () => {
   const { researcherId } = useParams()
   return (
     <Container className='pt-5'>
-      <p>Researchers Page: {researcherId}</p>
+      <p>Researchers Page: {researcherId || 'no researcherId given'}</p>
     </Container>
   )
 }

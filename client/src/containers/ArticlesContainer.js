@@ -7,7 +7,7 @@ const ArticlesContainer = () => {
   const { articleId } = useParams()
   return (
     <Container className='pt-5'>
-      <p>Articles Page: {articleId}</p>
+      <p>Articles Page: {articleId || 'no articleId given'}</p>
     </Container>
   )
 }
