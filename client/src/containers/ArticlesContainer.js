@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container'
 const ArticlesContainer = () => {
   const { articleId } = useParams()
   return (
-    <Container>
+    <Container className='pt-5'>
       <p>Articles Page: {articleId}</p>
     </Container>
   )
