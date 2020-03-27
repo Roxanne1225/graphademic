@@ -1,10 +1,16 @@
 const express = require("express");
-
 const app = express();
 
+//  Routes
+const articlesRoutes = require('./api/routes/articles')
+const researchersRoutes = require('./api/routes/researchers')
+app.use('/api/articles', articlesRoutes)
+app.use('/api/researchers', researchersRoutes)
 
-app.get("/api/", (req, res) => res.send("Hello World"));
 
+app.get("/api/", (req, res) => res.send("API Endpoint is live!"));
+
+//  Serving the Static Frontend
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 
