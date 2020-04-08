@@ -12,7 +12,8 @@ const pool = new Pool({
 router.get('/',async (req, res) => {
   try {
     const client = await pool.connect()
-    const result = await client.query('SELECT * FROM researchers where name='Xiaoyi Ma'');
+    const query = `SELECT * FROM researchers where name='Xiaoyi Ma'`;
+    const result = await client.query(query);
     const results = {'results':(result)? result.rows:null};
     console.log(results);
     client.release();
