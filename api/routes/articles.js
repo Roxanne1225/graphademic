@@ -10,6 +10,7 @@ const pool = new Pool({
 
 //  GET /articles
 router.get('/',async (req, res) => {
+  console.log("here");
   const queryObject = url.parse(req.url,true).query;
   const articleName = queryObject.articleName;
   try {
