@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router()
-
+const express = require('express');
+const router = express.Router();
+const url = require('url');
 //connect to database
 const { Pool } = require('pg');
 const pool = new Pool({
@@ -10,12 +10,20 @@ const pool = new Pool({
 
 //  GET /articles
 router.get('/',async (req, res) => {
+  const queryObject = url.parse(req.url,true).query;
+  const articleName = queryObject.articleName;
   try {
     const client = await pool.connect()
-    const query = `SELECT * FROM researchers where name='Xiaoyi Ma'`;
-    const result = await client.query(query);
-    const results = {'results':(result)? result.rows:null};
-    console.log(results);
+    var query = `SELECT aid,fid FROM articles where title='${articleName}'`;
+    var result = await client.query(query);
+    if (result) {
+      const aid = result.rows[0].aid;
+      const fid = result.rows[0].fid;
+      //query = `SELECT rid FROM authorizations where aid = ${aid}`;
+      //result = await client.query(query);
+      //var articleQueryObject = {authorInfo:[],}
+      console.log(aid + " " + fid);
+    }
     client.release();
   } catch(err) {
     console.error(err);
