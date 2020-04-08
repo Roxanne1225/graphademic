@@ -10,6 +10,7 @@ app.use('/api/researchers', researchersRoutes)
 
 app.get("/api/", (req, res) => res.send("API Endpoint is live!"));
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"]=0;
 //  Serving the Static Frontend
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
