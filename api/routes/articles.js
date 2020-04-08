@@ -1,9 +1,25 @@
 const express = require('express')
 const router = express.Router()
 
+//connect to database
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+});
+
 //  GET /articles
 router.get('/', (req, res) => {
-  res.send('temp')
+  try {
+    const client = await pool.connect()
+    const result = await client.query('SELECT * FROM researchers where name='Xiaoyi Ma'');
+    const results = {'results':(result)? result.rows:null};
+    console.log(results);
+    client.release();
+  } catch(err) {
+    console.error(err);
+    res.send("Error"+err);
+  }
 })
 
 //  POST /articles
