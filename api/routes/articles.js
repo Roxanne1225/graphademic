@@ -19,7 +19,7 @@ router.get('/',async (req, res) => {
     var articleQueryObject = {authorInfo:[],fieldInfo:[]};
     if (result && result.rowCount > 0) {
       const aid = result.rows[0].aid;
-      console.log(aid);
+      //console.log(aid);
       const fid = result.rows[0].fid;
     query = `SELECT name,title FROM (SELECT rid,title from (SELECT rid,articles.title as title,DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank FROM
     (SELECT rid,aid FROM authorizations WHERE rid in (SELECT rid FROM authorizations WHERE aid = ${aid})) as a
@@ -28,7 +28,7 @@ router.get('/',async (req, res) => {
     WHERE rank <= 3) as c natural join researchers
     ORDER BY name`;
     const authorInfoObject = await client.query(query);
-    console.log(authorInfoObject);
+    //console.log(authorInfoObject);
     if (authorInfoObject && authorInfoObject.rowCount > 0) {
       var curauthorName = authorInfoObject.rows[0].name;
       var curauthor =  {name:curauthorName,otherHighlyCitedArticles:[]};
