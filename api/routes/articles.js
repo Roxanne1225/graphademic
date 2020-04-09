@@ -60,6 +60,7 @@ router.get('/',async (req, res) => {
 
 //  POST /articles add
 router.post('/',async (req, res) => {
+  /*
   const frontArticle = req.body;
   const client = await pool.connect();
   try {
@@ -94,12 +95,13 @@ router.post('/',async (req, res) => {
     res.send('Fail, try later');
   }finally {
     client.release();
-  }
+  }*/
+  res.send('temp');
 })
 
 //  GET /articles/:articleName
 router.get('/:articleName',async (req, res) => {
-
+/*
   try {
     const client = await pool.connect();
     var query = `SELECT * FROM articles WHERE upper(title) = upper('${req.param.articleName}')`;
@@ -125,11 +127,13 @@ router.get('/:articleName',async (req, res) => {
     client.release();
   }catch(e) {
     console.error(e);
-  }
+  }*/
+  res.send('tmp');
 })
 
 //  PUT /articles/:articleId
 router.put('/:articleId',async (req, res) => {
+  /*
   try {
     const client = await pool.connect();
     await client.query('BEGIN');
@@ -154,11 +158,13 @@ router.put('/:articleId',async (req, res) => {
     await client.query('ROLLBACK');
     res.send('Fail,try later');
     console.error(e);
-  }
+  }*/
+  res.send('send');
 })
 
 //  DELETE /articles/:articleId
 router.delete('/:articleId', async (req, res) => {
+  /*
   try {
     const client = await pool.connect();
     const aid = req.param.articleId;
@@ -169,7 +175,8 @@ router.delete('/:articleId', async (req, res) => {
   }catch(e) {
     res.send('Fail,try later');
     console.error(e);
-  }
+  }*/
+  res.send('tmpd');
 })
 
 module.exports = router
