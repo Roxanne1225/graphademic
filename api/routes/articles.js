@@ -72,7 +72,7 @@ router.post('/',async (req, res) => {
       var query = `INSERT INTO articles (title,pub_year,url,citation,fid) values ('${partialArticle.title}',${partialArticle.publishYear},'${partialArticle.url}',${partialArticle.citations},'${partialArticle.fieldID}') RETURNING aid`;
       const rinserted = await client.query(query);
       const insertaid = rinsertid.rows[0].aid;
-      partialArticle.authors.forEach(function(item) {
+      partialArticle.authors.forEach(async function(item) {
         query = `SELECT rid FROM researchers WHERE name = '${item}'`;
         const result = await client.query(query);
         if (result) {
@@ -137,7 +137,7 @@ router.put('/:articleId',async (req, res) => {
     const partialArticleObject = req.body;
     const keys = Object.keys(partialArticleObject);
     const dict = {"title":"title","publishYear":"pub_year","url":"url","citations":"citations","fieldID":"fid"};
-    keys.forEach(function(key) {
+    keys.forEach(async function(key) {
       if (key == "publishYear" || key == "citations") {
       const query = `UPDATE articles set ${dict[key]} =  ${partialArticleObject[key]} WHERE aid = ${aid}`;
       await client.query(query);
