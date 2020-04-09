@@ -106,7 +106,7 @@ router.get('/:articleName',async (req, res) => {
 
   try {
     const client = await pool.connect();
-    var query = `SELECT * FROM articles WHERE upper(title) = upper('${req.param.articleName}')`;
+    var query = `SELECT * FROM articles WHERE upper(title) = upper('${req.params.articleName}')`;
     const result = await client.query(query);
     var articleObject = {articleId:null,title:null,authors:[],publishYear:null,url:null,citations:null,fieldID:null};
     if (result && result.rowCount > 0) {
@@ -139,7 +139,7 @@ router.put('/:articleId',async (req, res) => {
   try {
     const client = await pool.connect();
     await client.query('BEGIN');
-    const aid = req.param.articleId;
+    const aid = req.params.articleId;
     const partialArticleObject = req.body;
     const keys = Object.keys(partialArticleObject);
     const dict = {"title":"title","publishYear":"pub_year","url":"url","citations":"citations","fieldID":"fid"};
@@ -169,7 +169,7 @@ router.delete('/:articleId', async (req, res) => {
 
   try {
     const client = await pool.connect();
-    const aid = req.param.articleId;
+    const aid = req.params.articleId;
     const query = `DELETE FROM articles WHERE aid = ${aid}`;
     await client.query(query);
     res.send('OK');
