@@ -28,7 +28,7 @@ router.get('/',async (req, res) => {
     WHERE rank <= 3) as c natural join researchers
     ORDER BY name`;
     const authorInfoObject = await client.query(query);
-    console.log(authroInfoObject);
+    console.log(authorInfoObject);
     if (authorInfoObject) {
       var curauthorName = authorInfoObject.rows[0].name;
       var curauthor =  {name:curauthorName,otherHighlyCitedArticles:[]};
