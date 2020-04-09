@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  Link,
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
-function App() {
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+
+import ExploreContainer from './containers/ExploreContainer'
+import ArticlesContainer from './containers/ArticlesContainer'
+import ResearchersContainer from './containers/ResearchersContainer'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Navbar bg="dark" variant='dark' expand="lg">
+          <Navbar.Brand as={Link} to='/'>Graphademic</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={Link} to='/explore'>Explore</Nav.Link>
+              <Nav.Link as={Link} to='/articles'>Articles</Nav.Link>
+              <Nav.Link as={Link} to='/researchers'>Researchers</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/articles/:articleId?" component={ArticlesContainer} />
+          <Route path="/researchers/:researcherId?" component={ResearchersContainer} />
+          <Route path="/" component={ExploreContainer} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
-
-export default App;
