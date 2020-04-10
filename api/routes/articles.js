@@ -111,7 +111,6 @@ router.post('/', async (req, res) => {
       citations: null,
       fieldID: null
     };
-    console.log('shit')
 
     const keys = Object.keys(frontArticle);
     keys.forEach(key => {
@@ -157,7 +156,7 @@ router.post('/', async (req, res) => {
         await client.query(query);
       }
     });
-    console.log('hi')
+
     await client.query('COMMIT');
     res.send('OK');
   } catch (e) {
