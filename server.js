@@ -1,5 +1,8 @@
 const express = require("express");
 const app = express();
+require('dotenv').config()
+
+app.use(express.json())
 
 //  Routes
 const articlesRoutes = require('./api/routes/articles')
@@ -11,7 +14,8 @@ app.use('/api/researchers', researchersRoutes)
 app.get("/api/", (req, res) => res.send("API Endpoint is live!"));
 
 //insecure! but only in this way can we connect to the database
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"]=0;
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
 //  Serving the Static Frontend
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
