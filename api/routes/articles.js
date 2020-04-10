@@ -44,7 +44,9 @@ router.get('/',async (req, res) => {
     );
     articleQueryObject.authorInfo.push(curauthor);
     }
+    console.log(typeof fid);
     if (fid) {
+      console.log('here!');
       query = `SELECT title FROM articles WHERE fid = ${fid} ORDER BY citation DESC LIMIT 5`;
       const fieldarticles = await client.query(query);
       fieldarticles.rows.forEach(function(item) {
