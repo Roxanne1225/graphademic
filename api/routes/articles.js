@@ -97,7 +97,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-//  POST /articles add
+//  POST /articles 
 router.post('/', async (req, res) => {
   const frontArticle = req.body;
   const client = await pool.connect();
@@ -167,8 +167,8 @@ router.post('/', async (req, res) => {
   res.send('temp');
 })
 
-//  GET /articles/:articleName
-router.get('/:articleName', async (req, res) => {
+//  GET /articles/byArticleName/:articleName
+router.get('/byArticleName/:articleName', async (req, res) => {
   const articleName = req.params.articleName
 
   const article = await ArticleModel
