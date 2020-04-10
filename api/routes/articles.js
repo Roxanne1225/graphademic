@@ -32,7 +32,6 @@ router.get('/', async (req, res) => {
 
     if (result && result.rowCount > 0) {
       const aid = result.rows[0].aid;
-
       const fid = result.rows[0].fid;
       query = `
         SELECT name, title 
@@ -85,10 +84,11 @@ router.get('/', async (req, res) => {
         `;
         const fieldarticles = await client.query(query);
         fieldarticles.rows.forEach(function (item) {
-          authorQueryObject.fieldInfo.push(item.title);
+          articleQueryObject.fieldInfo.push(item.title);
         });
       }
     }
+
     client.release();
     res.send(articleQueryObject);
   } catch (err) {
