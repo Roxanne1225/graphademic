@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 
-import { fetchArticleByArticleTitle, createArticle } from '../api/ArticleClient'
+import { fetchArticleByArticleTitle, createArticle, deleteArticleByArticleId } from '../api/ArticleClient'
 
 import Article from '../components/articles/Article'
 import ArticleFilterForm from '../components/articles/ArticleFilterForm'
@@ -30,6 +30,12 @@ const ArticlesContainer = () => {
     })
   }
 
+  const handleDelete = () => {
+    deleteArticleByArticleId(article.aid).then(article => {
+      alert("Deleted")
+    })
+  }
+
   return (
     <Container className='pt-5'>
       <ArticleFilterForm onSubmit={handleSubmit} />
@@ -39,6 +45,7 @@ const ArticlesContainer = () => {
             <Article
               data={article}
               onUpdate={handleUpdate}
+              onDelete={handleDelete}
             />
           </div>
         )

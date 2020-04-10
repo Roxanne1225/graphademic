@@ -32,3 +32,10 @@ export function createArticle(article) {
     data: article
   }).then(res => res.data)
 }
+
+export function deleteArticleByArticleId(articleId) {
+  return axios({
+    method: 'DELETE',
+    url: `/api/articles/${articleId}`,
+  }).then(res => res.data)
+}
