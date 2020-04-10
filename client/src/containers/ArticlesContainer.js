@@ -1,24 +1,41 @@
-import React from 'react'
-import { useParams } from "react-router-dom";
+import React, { useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 
-import { useFetch } from '../hooks/useFetch'
-import { fetchArticleById } from '../api/ArticleClient'
+import { fetchArticleByArticleTitle } from '../api/ArticleClient'
 
+import Article from '../components/articles/Article'
 import ArticleFilterForm from '../components/articles/ArticleFilterForm'
 
 const ArticlesContainer = () => {
-  const { articleId } = useParams()
+  const [article, setArticle] = useState(undefined)
 
-  const { isReceived, data: article } =
-    useFetch(fetchArticleById, articleId)
+  const handleSubmit = (query) => {
+    const articleName = query.title
+    fetchArticleByArticleTitle(articleName).then(article => {
+      setArticle(article)
+    })
+  }
+
+  const handleUpdate = (articleName) => {
+    fetchArticleByArticleTitle(articleName).then(article => {
+      setArticle(article)
+    })
+  }
 
   return (
     <Container className='pt-5'>
-      <p>Articles Page: {articleId || 'no articleId given'}</p>
-      {articleId && isReceived && JSON.stringify(article)}
-      <ArticleFilterForm />
+      <ArticleFilterForm onSubmit={handleSubmit} />
+      {
+        article && (
+          <div className='pt-3'>
+            <Article
+              data={article}
+              onUpdate={handleUpdate}
+            />
+          </div>
+        )
+      }
     </Container>
   )
 }

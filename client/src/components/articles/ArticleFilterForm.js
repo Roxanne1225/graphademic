@@ -14,7 +14,8 @@ const ArticleFilterForm = ({ onSubmit }) => {
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     onSubmit(articleQuery)
   }
 
@@ -27,21 +28,6 @@ const ArticleFilterForm = ({ onSubmit }) => {
             <Form.Control
               type="text"
               onChange={makeHandleChange('title')}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Author</ Form.Label>
-            <Form.Control
-              type="text"
-              onChange={makeHandleChange('author')}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicCheckbox">
-            <Form.Label>Year Published</Form.Label>
-            <Form.Control
-              onChange={makeHandleChange('yearPublished')}
-              type="text"
-              placeholder="eg. 1999"
             />
           </Form.Group>
           <Button

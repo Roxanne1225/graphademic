@@ -34,7 +34,7 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/articles/:articleId?" component={ArticlesContainer} />
+          <Route path="/articles/" component={ArticlesContainer} />
           <Route path="/researchers/:researcherId?" component={ResearchersContainer} />
           <Route path="/" component={ExploreContainer} />
         </Switch>
