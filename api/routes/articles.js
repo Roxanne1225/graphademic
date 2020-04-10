@@ -47,7 +47,7 @@ router.get('/',async (req, res) => {
     console.log(typeof fid);
     if (fid) {
       console.log('here!');
-      query = `SELECT title FROM articles WHERE cast(fid as TEXT) = ${fid} ORDER BY citation DESC LIMIT 5`;
+      query = `SELECT title FROM articles WHERE cast(fid as TEXT) = '${fid}' ORDER BY citation DESC LIMIT 5`;
       const fieldarticles = await client.query(query);
       fieldarticles.rows.forEach(function(item) {
         authorQueryObject.fieldInfo.push(item.title);
