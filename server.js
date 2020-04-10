@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 require('dotenv').config()
 
+app.use(express.json())
+
 //  Routes
 const articlesRoutes = require('./api/routes/articles')
 const researchersRoutes = require('./api/routes/researchers')

@@ -25,6 +25,7 @@ exports.getArticleByArticleName = function (articleName, pool) {
 
       if (result && result.rowCount > 0) {
         const curarticle = result.rows[0];
+        resolve(curarticle)
 
         articleObject = {
           ...articleObject,
@@ -53,9 +54,36 @@ exports.getArticleByArticleName = function (articleName, pool) {
       client.release();
       resolve(articleObject)
     } catch (e) {
-      reject()
       console.log(e)
+      reject()
     }
 
+  })
+}
+
+exports.deleteArticleByArticleId = function (pool, articleId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const client = await pool.connect().catch(e => {
+        console.log(e)
+        reject(e)
+      })
+
+      const deleteArticleQuery = `
+        DELETE FROM articles
+        WHERE aid = ${articleId}
+      `
+
+      await client.query(deleteArticleQuery).catch(e => {
+        console.log(e)
+        reject(e)
+      })
+
+      resolve()
+      client.release()
+    } catch (e) {
+      console.log(e)
+      reject()
+    }
   })
 }

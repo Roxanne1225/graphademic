@@ -111,6 +111,7 @@ router.post('/', async (req, res) => {
       citations: null,
       fieldID: null
     };
+    console.log('shit')
 
     const keys = Object.keys(frontArticle);
     keys.forEach(key => {
@@ -156,6 +157,7 @@ router.post('/', async (req, res) => {
         await client.query(query);
       }
     });
+    console.log('hi')
     await client.query('COMMIT');
     res.send('OK');
   } catch (e) {
@@ -164,7 +166,6 @@ router.post('/', async (req, res) => {
   } finally {
     client.release();
   }
-  res.send('temp');
 })
 
 //  GET /articles/byArticleName/:articleName
@@ -227,22 +228,16 @@ router.put('/:articleId', async (req, res) => {
 
 //  DELETE /articles/:articleId
 router.delete('/:articleId', async (req, res) => {
+  const articleId = req.params.articleId
 
-  try {
-    const client = await pool.connect();
-    const aid = req.params.articleId;
-    const query = `
-      DELETE FROM articles 
-      WHERE aid = ${aid}
-    `;
-    await client.query(query);
-    res.send('OK');
-    client.release();
-  } catch (e) {
-    res.send('Fail,try later');
-    console.error(e);
-  }
-  res.send('tmpd');
+  await ArticleModel
+    .deleteArticleByArticleId(pool, articleId)
+    .catch(e => {
+      console.error(e)
+      res.status(500).send("Internal server error.")
+    })
+
+  res.status(204).send(`Deleted article with articleId = ${articleId}`)
 })
 
 module.exports = router
