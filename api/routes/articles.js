@@ -184,46 +184,18 @@ router.get('/byArticleName/:articleName', async (req, res) => {
 
 //  PUT /articles/:articleId
 router.put('/:articleId', async (req, res) => {
+  const articleId = req.params.articleId
+  const updateObj = req.body
+  console.log(articleId, updateObj)
 
-  try {
-    const client = await pool.connect();
-    await client.query('BEGIN');
-    const aid = req.params.articleId;
-    const partialArticleObject = req.body;
-    const keys = Object.keys(partialArticleObject);
-    const dict = {
-      "title": "title",
-      "publishYear": "pub_year",
-      "url": "url",
-      "citations": "citations",
-      "fieldID": "fid"
-    };
+  await ArticleModel
+    .updateArticleByArticleId(pool, articleId, updateObj)
+    .catch(e => {
+      console.log(e)
+      res.status(500).send("Internal server error.")
+    })
 
-    keys.forEach(async function (key) {
-      if (key == "publishYear" || key == "citations") {
-        const query = `
-          UPDATE articles set ${dict[key]} =  ${partialArticleObject[key]} 
-          WHERE aid = ${aid}
-        `;
-        await client.query(query);
-      }
-      else {
-        const query = `
-          UPDATE articles set ${dict[key]} =  '${partialArticleObject[key]}'
-          WHERE aid = ${aid}
-        `;
-        await client.query(query);
-      }
-    });
-    await client.query('COMMIT');
-    res.send('OK');
-    client.release();
-  } catch (e) {
-    await client.query('ROLLBACK');
-    res.send('Fail,try later');
-    console.error(e);
-  }
-  res.send('send');
+  res.status(200).send(`Updated article with articleId = ${articleId}`)
 })
 
 //  DELETE /articles/:articleId
@@ -237,7 +209,7 @@ router.delete('/:articleId', async (req, res) => {
       res.status(500).send("Internal server error.")
     })
 
-  res.status(204).send(`Deleted article with articleId = ${articleId}`)
+  res.status(204).send()
 })
 
 module.exports = router

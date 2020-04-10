@@ -87,3 +87,45 @@ exports.deleteArticleByArticleId = function (pool, articleId) {
     }
   })
 }
+
+function getSQLEscapedString(value) {
+  if (typeof (value) === 'number') {
+    return value
+  } else {
+    return `'${value}'`
+  }
+}
+
+exports.updateArticleByArticleId = function (pool, articleId, updateObj) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const client = await pool.connect().catch(e => {
+        console.log(e)
+        reject(e)
+      })
+
+      const attributeUpdateList = Object.keys(updateObj)
+        .map(attribute =>
+          `${attribute} = ${getSQLEscapedString(updateObj[attribute])}`
+        )
+        .join(',')
+
+      const updateArticleQuery = `
+        UPDATE articles 
+        SET ${attributeUpdateList}
+        WHERE aid = ${articleId}
+      `;
+
+      await client.query(updateArticleQuery).catch(e => {
+        console.log(e)
+        reject(e)
+      })
+
+      client.release()
+      resolve()
+    } catch (e) {
+      console.log(e)
+      reject()
+    }
+  })
+}
