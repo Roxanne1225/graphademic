@@ -24,3 +24,11 @@ export function updateArticleByArticleId(articleId, updateObject) {
     data: updateObject
   }).then(res => res.data);
 }
+
+export function createArticle(article) {
+  return axios({
+    method: 'POST',
+    url: `/api/articles`,
+    data: article
+  }).then(res => res.data)
+}
