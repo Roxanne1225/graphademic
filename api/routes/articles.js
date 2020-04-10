@@ -19,7 +19,7 @@ router.get('/',async (req, res) => {
     var articleQueryObject = {authorInfo:[],fieldInfo:[]};
     if (result && result.rowCount > 0) {
       const aid = result.rows[0].aid;
-      //console.log(aid);
+      console.log(typeof aid);
       const fid = result.rows[0].fid;
     query = `SELECT name,title FROM (SELECT rid,title from (SELECT rid,articles.title as title,DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank FROM
     (SELECT rid,aid FROM authorizations WHERE rid in (SELECT rid FROM authorizations WHERE aid = ${aid})) as a
@@ -47,7 +47,7 @@ router.get('/',async (req, res) => {
     console.log(typeof fid);
     if (fid) {
       console.log('here!');
-      query = `SELECT title FROM articles WHERE fid = ${fid} ORDER BY citation DESC LIMIT 5`;
+      query = `SELECT title FROM articles WHERE cast(fid as TEXT) = ${fid} ORDER BY citation DESC LIMIT 5`;
       const fieldarticles = await client.query(query);
       fieldarticles.rows.forEach(function(item) {
         authorQueryObject.fieldInfo.push(item.title);
