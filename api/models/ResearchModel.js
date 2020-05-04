@@ -10,82 +10,54 @@ exports.getresearchers = function (researcherId, pool) {
       var query = `
         SELECT *
         FROM researchers 
-        WHERE upper(title) = upper('${researcherName}')
+        WHERE name = ${researcherName}
       `;
 
       const result = await client.query(query).catch((e) => console.log(e));
 
       let researcherQueryObject = {
-        authorInfo: [],
-        fieldInfo: [],
+        basicInfo: null,
+        paperInfo: [],
+        partnerInfo: [],
       };
 
       if (result && result.rowCount > 0) {
-        const aid = result.rows[0].aid;
-        resolve(aid);
-        const fid = result.rows[0].fid;
-        resolve(fid);
+        const curResearcher = result.rows[0];
+        resolve(curResearcher);
 
         query = `
-          SELECT name, title 
-          FROM (
-            SELECT rid, title 
-            FROM (
-              SELECT rid, researchers.title as title, DENSE_RANK() OVER(PARTITION BY rid ORDER BY researchers.citation DESC) as rank 
-              FROM (
-                SELECT rid,aid 
-                FROM authorizations 
-                WHERE rid in (
-                  SELECT rid 
-                  FROM authorizations 
-                  WHERE aid = ${aid}
-                )
-              ) as a NATURAL JOIN researchers
-            ) as b
-            WHERE rank <= 3
-          ) as c NATURAL JOIN researchers
-          ORDER BY name
+            SELECT b.fid 
+            FROM (SELECT * FROM authorizations WHERE fid = (
+                SELECT fid FROM researchers WHERE name = '${curResearcher.researcherName}')) AS a
+                INNER JOIN authorizations AS b ON a.aid = b.aid AND a.fid  <> b.fid
+            GROUP BY b.fid
+            ORDER BY COUNT(a.aid) DESC
+            LIMIT 5;
         `;
 
-        const authorInfoObject = await client
+        const partnerInfo = await client
           .query(query)
           .catch((e) => console.log(e));
 
-        if (authorInfoObject && authorInfoObject.rowCount > 0) {
-          let curauthorName = authorInfoObject.rows[0].name;
-          let curauthor = {
-            name: curauthorName,
-            otherHighlyCitedresearchers: [],
-          };
-
-          authorInfoObject.rows.forEach(function (item) {
-            if (item.name == curauthorName) {
-              curauthor.otherHighlyCitedresearchers.push(item.title);
-            } else {
-              researcherQueryObject.authorInfo.push(curauthor);
-              curauthorName = item.name;
-              curauthor = {
-                name: item.name,
-                otherHighlyCitedresearchers: [item.title],
-              };
-            }
-          });
-          researcherQueryObject.authorInfo.push(curauthor);
-        }
-        if (fid) {
-          query = `
-            SELECT title 
-            FROM researchers 
-            WHERE fid = ${fid} 
-            ORDER BY citation DESC LIMIT 5
+        query = `
+            SELECT title
+            FROM articles natural join authorizations natural join researchers
+            WHERE name = researcherName AND citation in 
+            (SELECT citation FROM articles natural join authorizations natural join researchers 
+                WHERE name = researcherName ORDER BY citation DESC LIMIT 5)          
           `;
-          const fieldresearchers = await client.query(query);
-          fieldresearchers.rows.forEach(function (item) {
-            researcherQueryObject.fieldInfo.push(item.title);
-          });
-        }
-      }
 
+        const paperInfo = await client
+          .query(query)
+          .catch((e) => console.log(e));
+
+        researcherQueryObject = {
+          ...researcherQueryObject,
+          basicInfo: curResearcher,
+          paperInfo: paperInfo,
+          partnerInfo: partnerInfo,
+        };
+      }
       client.release();
       resolve(researcherQueryObject);
     } catch (e) {
