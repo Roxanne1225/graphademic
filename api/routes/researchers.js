@@ -3,6 +3,10 @@ const router = express.Router();
 const url = require("url");
 //connect to database
 const { Pool } = require("pg");
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
 
 //  GET /researchers
 router.get("/", async (req, res) => {
