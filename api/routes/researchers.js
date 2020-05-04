@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
 router.get("/:researcherName", async (req, res) => {
   const researcherName = req.params.researcherName;
 
-  const researcher = await ResearcherModel.getresearcherByresearcherName(
+  const researcher = await ResearcherModel.getResearcherByResearcherName(
     researcherName,
     pool
   ).catch((e) => {
