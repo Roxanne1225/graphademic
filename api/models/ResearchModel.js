@@ -1,5 +1,5 @@
 //  GET /researchers
-exports.getresearchers = function (researcherId, pool) {
+exports.getresearchers = function (researcherName, pool) {
   return new Promise(async (resolve, reject) => {
     try {
       const client = await pool.connect().catch((e) => {
