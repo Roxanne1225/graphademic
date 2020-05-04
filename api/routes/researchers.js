@@ -8,6 +8,8 @@ const pool = new Pool({
   ssl: true,
 });
 
+const ResearcherModel = require("../models/ResearcherModel");
+
 //  GET /researchers
 router.get("/", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
@@ -25,12 +27,13 @@ router.get("/", async (req, res) => {
 //  POST /researchers
 router.post("/", async (req, res) => {
   const frontResearcher = req.body;
-  const researcher = await researcherModel
-    .updateresearchers(pool, frontResearcher)
-    .catch((e) => {
-      console.error(e);
-      res.status(500).send("Internal server error.");
-    });
+  const researcher = await ResearcherModel.updateresearchers(
+    pool,
+    frontResearcher
+  ).catch((e) => {
+    console.error(e);
+    res.status(500).send("Internal server error.");
+  });
 
   res.status(200).send(`Updated researcher with researcher = ${researcher}`);
 });
@@ -39,12 +42,13 @@ router.post("/", async (req, res) => {
 router.get("/:researcherName", async (req, res) => {
   const researcherName = req.params.researcherName;
 
-  const researcher = await researcherModel
-    .getresearcherByresearcherName(researcherName, pool)
-    .catch((e) => {
-      console.error(e);
-      res.status(500).send("Internal server error.");
-    });
+  const researcher = await ResearcherModel.getresearcherByresearcherName(
+    researcherName,
+    pool
+  ).catch((e) => {
+    console.error(e);
+    res.status(500).send("Internal server error.");
+  });
 
   res.status(200).send(researcher);
 });
@@ -55,12 +59,14 @@ router.put("/:researcherId", async (req, res) => {
   const updateObj = req.body;
   console.log(researcherId, updateObj);
 
-  await researcherModel
-    .updateresearcherByresearcherId(pool, researcherId, updateObj)
-    .catch((e) => {
-      console.log(e);
-      res.status(500).send("Internal server error.");
-    });
+  await ResearcherModel.updateresearcherByresearcherId(
+    pool,
+    researcherId,
+    updateObj
+  ).catch((e) => {
+    console.log(e);
+    res.status(500).send("Internal server error.");
+  });
 
   res
     .status(200)
@@ -71,12 +77,13 @@ router.put("/:researcherId", async (req, res) => {
 router.delete("/:researcherId", async (req, res) => {
   const researcherId = req.params.researcherId;
 
-  await researcherModel
-    .deleteresearcherByresearcherId(pool, researcherId)
-    .catch((e) => {
-      console.error(e);
-      res.status(500).send("Internal server error.");
-    });
+  await ResearcherModel.deleteresearcherByresearcherId(
+    pool,
+    researcherId
+  ).catch((e) => {
+    console.error(e);
+    res.status(500).send("Internal server error.");
+  });
 
   res
     .status(204)
