@@ -8,7 +8,7 @@ const pool = new Pool({
   ssl: true,
 });
 
-const ResearcherModel = require("../models/ResearcherModel");
+const ResearcherModel = require("../models/ResearchModel");
 
 //  GET /researchers
 router.get("/", async (req, res) => {
