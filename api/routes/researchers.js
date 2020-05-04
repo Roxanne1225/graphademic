@@ -14,12 +14,13 @@ const ResearcherModel = require("../models/ResearchModel");
 router.get("/", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
   const researcherName = queryObject.researcherName;
-  const researcher = await researcherModel
-    .getresearchers(researcherName, pool)
-    .catch((e) => {
-      console.error(e);
-      res.status(500).send("Internal server error.");
-    });
+  const researcher = await ResearcherModel.getresearchers(
+    researcherName,
+    pool
+  ).catch((e) => {
+    console.error(e);
+    res.status(500).send("Internal server error.");
+  });
 
   res.status(200).send(researcher);
 });
