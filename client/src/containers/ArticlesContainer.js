@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 
-import { fetchArticleByArticleTitle, createArticle, deleteArticleByArticleId } from '../api/ArticleClient'
+import {
+  fetchAuthorAndFieldInfoByArticleTitle,
+  fetchArticleByArticleTitle,
+  createArticle,
+  deleteArticleByArticleId
+} from '../api/ArticleClient'
 
 import Article from '../components/articles/Article'
 import ArticleFilterForm from '../components/articles/ArticleFilterForm'
@@ -10,11 +15,15 @@ import ArticleCreateForm from '../components/articles/ArticleCreateForm'
 
 const ArticlesContainer = () => {
   const [article, setArticle] = useState(undefined)
+  const [articleInfo, setArticleInfo] = useState(undefined)
 
   const handleSubmit = (query) => {
     const articleName = query.title
     fetchArticleByArticleTitle(articleName).then(article => {
       setArticle(article)
+    })
+    fetchAuthorAndFieldInfoByArticleTitle(articleName).then(articleInfo => {
+      setArticleInfo(articleInfo)
     })
   }
 
@@ -43,7 +52,8 @@ const ArticlesContainer = () => {
         article && (
           <div className='pt-3'>
             <Article
-              data={article}
+              article={article}
+              articleInfo={articleInfo}
               onUpdate={handleUpdate}
               onDelete={handleDelete}
             />

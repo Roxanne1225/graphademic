@@ -5,7 +5,10 @@ import { updateArticleByArticleId } from '../../api/ArticleClient'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 const STATES = {
   VIEWING: 'VIEWING',
@@ -15,11 +18,11 @@ const STATES = {
   EDIT_FAILED: 'EDIT_FAILED'
 }
 
-const Article = ({ data, onUpdate, onDelete }) => {
+const Article = ({ article, articleInfo, onUpdate, onDelete }) => {
   const [uiState, setUiState] = useState(STATES.VIEWING)
 
   const [articleValue, setArticleValue] = useState(
-    JSON.stringify(data, undefined, 4)
+    JSON.stringify(article, undefined, 4)
   )
 
   const handleChange = e => {
@@ -27,7 +30,7 @@ const Article = ({ data, onUpdate, onDelete }) => {
   }
 
   const handleUpdate = () => {
-    const articleId = data.aid
+    const articleId = article.aid
     const updateObject = JSON.parse(articleValue)
     updateArticleByArticleId(articleId, updateObject)
       .then(res => {
@@ -64,10 +67,10 @@ const Article = ({ data, onUpdate, onDelete }) => {
         return (
           <div className='pt-1'>
             <Alert variant='success'>Update successful.</Alert>
-            <p>ArticleID: {data.aid} </p>
-            <p>Year published: {data.pub_year}</p>
-            <p>FieldID: {data.fid}</p>
-            <p>Citations: {data.citation}</p>
+            <p>ArticleID: {article.aid} </p>
+            <p>Year published: {article.pub_year}</p>
+            <p>FieldID: {article.fid}</p>
+            <p>Citations: {article.citation}</p>
             <Button onClick={() => setUiState(STATES.EDITING)}>
               Edit Article
             </Button>
@@ -78,10 +81,10 @@ const Article = ({ data, onUpdate, onDelete }) => {
       default: {
         return (
           <div className='pt-1'>
-            <p>ArticleID: {data.aid} </p>
-            <p>Year published: {data.pub_year}</p>
-            <p>FieldID: {data.fid}</p>
-            <p>Citations: {data.citation}</p>
+            <p>ArticleID: {article.aid} </p>
+            <p>Year published: {article.pub_year}</p>
+            <p>FieldID: {article.fid}</p>
+            <p>Citations: {article.citation}</p>
             <Button className='mr-1' onClick={() => setUiState(STATES.EDITING)}>
               Edit Article
             </Button>
@@ -94,13 +97,63 @@ const Article = ({ data, onUpdate, onDelete }) => {
     }
   }
 
+  const renderOtherHighlyCitedArticleByAuthors = () => {
+    if (!articleInfo || articleInfo.authorInfo.length < 1) {
+      return null
+    }
+
+    return (
+      <div className='pt-5'>
+        <h4 className='pb-2'>Additional Info</h4>
+        <h5 className='pb-3'>Other highly cited article by the authors:</h5>
+        {
+          articleInfo.authorInfo.map(author => (
+            <Row className='pb-4'>
+              <Col md={2}>
+                <h6>{author.name}</h6>
+              </Col>
+              <Col md={10}>
+                <ListGroup>
+                  {author.otherHighlyCitedArticles.map(article => (
+                    <ListGroup.Item>{article}</ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Col>
+            </Row>
+          ))
+        }
+      </div>
+    )
+  }
+
+  const renderArticlesWithinThisField = () => {
+    if (!articleInfo || articleInfo.fieldInfo.length < 1) {
+      return null
+    }
+
+    return (
+      <div className='pt-2'>
+        <h5 className='pb-3'>Other articles within this field:</h5>
+        <ListGroup>
+          {
+            articleInfo.fieldInfo.length > 0 && articleInfo.fieldInfo.map(articles => (
+              <ListGroup.Item>{articles}</ListGroup.Item>
+            ))
+          }
+        </ListGroup>
+      </div>
+    )
+  }
+
   return (
     <Card>
       <Card.Body>
         <h3>
-          <a target='_blank' href={data.url}>{data.title}</a>
+          <a target='_blank' href={article.url}>{article.title}</a>
         </h3>
         {renderCardBody()}
+        {renderOtherHighlyCitedArticleByAuthors()}
+        {renderArticlesWithinThisField()}
       </Card.Body>
     </Card>
   )

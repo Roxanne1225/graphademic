@@ -2,6 +2,12 @@ import axios from 'axios'
 
 import { articleFixture } from '../fixtures/articles'
 
+export function fetchAuthorAndFieldInfoByArticleTitle(articleName) {
+  return axios
+    .get(`/api/articles?articleName=${articleName}`)
+    .then(res => res.data)
+}
+
 export function fetchArticleById(articleId) {
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve(articleFixture), 1000)

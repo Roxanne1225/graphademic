@@ -50,10 +50,12 @@ router.get("/", async (req, res) => {
 //  POST /articles
 router.post("/", async (req, res) => {
   const frontArticle = req.body;
-  await ArticleModel.updateArticles(pool, frontArticle).catch((e) => {
-    console.error(e);
-    res.status(500).send("Internal server error.");
-  });
+  const article = await ArticleModel.updateArticles(pool, frontArticle).catch(
+    (e) => {
+      console.error(e);
+      res.status(500).send("Internal server error.");
+    }
+  );
 
   res.status(200).send(`Updated article with article = ${article}`);
 });
@@ -98,7 +100,7 @@ router.delete("/:articleId", async (req, res) => {
     res.status(500).send("Internal server error.");
   });
 
-  res.status(204).send();
+  res.status(204).send(`Updated article with articleId = ${articleId}`);
 });
 
 module.exports = router;
