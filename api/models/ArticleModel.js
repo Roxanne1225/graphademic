@@ -22,16 +22,17 @@ exports.getArticles = function (articleName, pool) {
 
       if (result && result.rowCount > 0) {
         const aid = result.rows[0].aid;
-        resolve(aid);
         const fid = result.rows[0].fid;
-        resolve(fid);
 
         query = `
         SELECT name, title 
         FROM (
           SELECT rid, title 
           FROM (
-            SELECT rid, articles.title as title, DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank 
+            SELECT 
+              rid, 
+              articles.title as title, 
+              DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank 
             FROM (
               SELECT rid,aid 
               FROM authorizations 
@@ -50,6 +51,8 @@ exports.getArticles = function (articleName, pool) {
         const authorInfoObject = await client
           .query(query)
           .catch((e) => console.log(e));
+
+        console.log('hi', authorInfoObject)
 
         if (authorInfoObject && authorInfoObject.rowCount > 0) {
           let curauthorName = authorInfoObject.rows[0].name;
