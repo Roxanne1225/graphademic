@@ -1,3 +1,39 @@
+// AF search by subject, data visiualization
+exports.getArticlesBySubject = function(articleSubject, driver) {
+  return new Promise(async (resolve, reject) => {
+    const session = driver.session();
+    //TODO
+    articleSubject = '.*'+toUpper(articleSubject)+'.*';
+    const articleSubjectQuery = 'MATCH (a:Article)<-[:cites]-(b:Article) \
+    WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject} \
+    RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations' \
+    ORDER BY citations DESC \
+    LIMIT {limit}';
+    try {
+      const result = await session.readTransaction(tx =>
+        tx.run(articleSubjectQuery,{subject:articleSubject,limit:100})
+      );
+      const records = result.records;
+      var nodes=[], links=[];
+      records.forEach(res => {
+        nodes.push({id: res.get('articleId'),title: res.get('articleTitle'),size: res.get('citations')});
+        res.get('cites').forEach(src => {
+          links.push({source:src,target:res.get('articleId')});
+        });
+      });
+      resolve({nodes:nodes,links:links});
+    }catch(e) {
+      console.log(e);
+      reject();
+    }finally {
+      await session.close()
+    }
+  });
+
+};
+
+
+
 //  GET /articles/byArticleName/:articleName
 exports.getArticleByArticleName = function (articleName, pool) {
   return new Promise(async (resolve, reject) => {
@@ -8,8 +44,8 @@ exports.getArticleByArticleName = function (articleName, pool) {
       });
 
       const articleNameQuery = `
-        SELECT * 
-        FROM articles 
+        SELECT *
+        FROM articles
         WHERE upper(title) = upper('${articleName}')
       `;
 
@@ -41,8 +77,8 @@ exports.getArticleByArticleName = function (articleName, pool) {
         };
 
         const authorNameQuery = `
-          SELECT name 
-          FROM authorizations NATURAL JOIN researchers 
+          SELECT name
+          FROM authorizations NATURAL JOIN researchers
           WHERE aid = ${curarticle.aid}
         `;
 
@@ -118,7 +154,7 @@ exports.updateArticleByArticleId = function (pool, articleId, updateObj) {
         .join(",");
 
       const updateArticleQuery = `
-        UPDATE articles 
+        UPDATE articles
         SET ${attributeUpdateList}
         WHERE aid = ${articleId}
       `;
@@ -174,8 +210,8 @@ exports.updateArticles = function (pool, frontArticle) {
       const insertaid = rinsertid.rows[0].aid;
       partialArticle.authors.forEach(async function (item) {
         query = `
-          SELECT rid 
-          FROM researchers 
+          SELECT rid
+          FROM researchers
           WHERE name = '${item}'
         `;
 
@@ -188,7 +224,7 @@ exports.updateArticles = function (pool, frontArticle) {
           await client.query(query);
         } else {
           query = `
-            INSERT INTO researchers (name) values('${item}') 
+            INSERT INTO researchers (name) values('${item}')
             RETURNING rid
           `;
           const finsertid = await client.query(query);
@@ -218,8 +254,8 @@ exports.getArticles = function (articleName, pool) {
       });
 
       var query = `
-      SELECT aid,fid,citation 
-      FROM articles 
+      SELECT aid,fid,citation
+      FROM articles
       WHERE upper(title) = upper('${articleName}')
     `;
 
@@ -237,17 +273,17 @@ exports.getArticles = function (articleName, pool) {
         resolve(fid);
 
         query = `
-        SELECT name, title 
+        SELECT name, title
         FROM (
-          SELECT rid, title 
+          SELECT rid, title
           FROM (
-            SELECT rid, articles.title as title, DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank 
+            SELECT rid, articles.title as title, DENSE_RANK() OVER(PARTITION BY rid ORDER BY articles.citation DESC) as rank
             FROM (
-              SELECT rid,aid 
-              FROM authorizations 
+              SELECT rid,aid
+              FROM authorizations
               WHERE rid in (
-                SELECT rid 
-                FROM authorizations 
+                SELECT rid
+                FROM authorizations
                 WHERE aid = ${aid}
               )
             ) as a NATURAL JOIN articles
@@ -281,9 +317,9 @@ exports.getArticles = function (articleName, pool) {
         }
         if (fid) {
           query = `
-          SELECT title 
-          FROM articles 
-          WHERE fid = ${fid} 
+          SELECT title
+          FROM articles
+          WHERE fid = ${fid}
           ORDER BY citation DESC LIMIT 5
         `;
           const fieldarticles = await client.query(query);

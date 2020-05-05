@@ -10,6 +10,29 @@ const pool = new Pool({
 
 const ArticleModel = require("../models/ArticleModel");
 
+
+//NEO4J
+var neo4j = require('neo4j-driver').v1;
+
+var graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
+var graphenedbUser = process.env.GRAPHENEDB_BOLT_USER;
+var graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
+
+var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser,graphenedbPass));
+
+// AF search by subject, data visiualization
+router.get("/byArticleSubject/:articleSubject", async (req, res) => {
+  const articleSubject = req.params.articleSubject;
+  const articlesandcites = await ArticleModel.getArticlesBySubject(articleSubject, driver).catch(
+    (e) => {
+      console.error(e);
+      res.status(500).send("Internal server error.");
+    }
+  );
+
+  res.status(200).send(articlesandcites);
+});
+
 //  GET /articles
 router.get("/", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
