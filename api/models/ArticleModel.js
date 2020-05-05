@@ -1,9 +1,9 @@
 // AF search by subject, data visiualization
-exports.getArticlesBySubject = function(articleSubject, driver) {
+exports.getArticlesBySubject = function (articleSubject, driver) {
   return new Promise(async (resolve, reject) => {
     const session = driver.session();
     //TODO
-    articleSubject = '.*'+toUpper(articleSubject)+'.*';
+    articleSubject = '.*' + toUpper(articleSubject) + '.*';
     const articleSubjectQuery = `MATCH (a:Article)<-[:cites]-(b:Article) \
     WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject} \
     RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations' \
@@ -11,21 +11,21 @@ exports.getArticlesBySubject = function(articleSubject, driver) {
     LIMIT {limit}`;
     try {
       const result = await session.readTransaction(tx =>
-        tx.run(articleSubjectQuery,{subject:articleSubject,limit:100})
+        tx.run(articleSubjectQuery, { subject: articleSubject, limit: 100 })
       );
       const records = result.records;
-      var nodes=[], links=[];
+      var nodes = [], links = [];
       records.forEach(res => {
-        nodes.push({id: res.get('articleId'),title: res.get('articleTitle'),size: res.get('citations')});
+        nodes.push({ id: res.get('articleId'), title: res.get('articleTitle'), size: res.get('citations') });
         res.get('cites').forEach(src => {
-          links.push({source:src,target:res.get('articleId')});
+          links.push({ source: src, target: res.get('articleId') });
         });
       });
-      resolve({nodes:nodes,links:links});
-    }catch(e) {
+      resolve({ nodes: nodes, links: links });
+    } catch (e) {
       console.log(e);
       reject();
-    }finally {
+    } finally {
       await session.close()
     }
   });
@@ -35,7 +35,7 @@ exports.getArticlesBySubject = function(articleSubject, driver) {
 
 
 //  GET /articles/byArticleName/:articleName
-exports.getArticleByArticleName = function (articleName, pool) {
+exports.getArticles = function (articleName, pool) {
   return new Promise(async (resolve, reject) => {
     try {
       const client = await pool.connect().catch((e) => {
