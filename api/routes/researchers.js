@@ -60,7 +60,7 @@ router.put("/:researcherId", async (req, res) => {
   const updateObj = req.body;
   console.log(researcherId, updateObj);
 
-  await ResearcherModel.updateresearcherByresearcherId(
+  await ResearcherModel.updateResearcherByResearcherId(
     pool,
     researcherId,
     updateObj
