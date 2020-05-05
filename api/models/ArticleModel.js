@@ -4,17 +4,19 @@ exports.getArticlesBySubject = function(articleSubject, driver) {
     const session = driver.session();
     //TODO
     articleSubject = '.*'+toUpper(articleSubject)+'.*';
-    const articleSubjectQuery = 'MATCH (a:Article)<-[:cites]-(b:Article) \
+    const articleSubjectQuery = `MATCH (a:Article)<-[:cites]-(b:Article) \
     WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject} \
     RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations' \
     ORDER BY citations DESC \
-    LIMIT {limit}';
+    LIMIT {limit}`;
     try {
       const result = await session.readTransaction(tx =>
         tx.run(articleSubjectQuery,{subject:articleSubject,limit:100})
       );
+
       const records = result.records;
-      var nodes=[], links=[];
+      var nodes=[];
+      var links=[];
       records.forEach(res => {
         nodes.push({id: res.get('articleId'),title: res.get('articleTitle'),size: res.get('citations')});
         res.get('cites').forEach(src => {
@@ -22,10 +24,10 @@ exports.getArticlesBySubject = function(articleSubject, driver) {
         });
       });
       resolve({nodes:nodes,links:links});
-    }catch(e) {
+    } catch(e) {
       console.log(e);
       reject();
-    }finally {
+    } finally {
       await session.close()
     }
   });
