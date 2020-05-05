@@ -10,7 +10,7 @@ exports.getresearchers = function (researcherName, pool) {
       var query = `
         SELECT *
         FROM researchers 
-        WHERE name = ${researcherName}
+        WHERE name = '${researcherName}'
       `;
 
       const result = await client.query(query).catch((e) => console.log(e));
@@ -90,7 +90,7 @@ exports.updateresearchers = function (pool, frontResearcher) {
       let query = `
           INSERT INTO researchers (institute,name,url,picture_url) values (
             '${partialResearcher.institute}',
-            ${partialResearcher.name},
+            '${partialResearcher.name}',
             '${partialResearcher.picture_url}'
           ) RETURNING rid
         `;
@@ -172,7 +172,7 @@ exports.updateResearcherByResearcherId = function (
       const updateResearcherQuery = `
           UPDATE researchers 
           SET ${attributeUpdateList}
-          WHERE rid = ${researcherId}
+          WHERE rid = '${researcherId}'
         `;
 
       await client.query(updateResearcherQuery).catch((e) => {
@@ -200,7 +200,7 @@ exports.deleteResearcherByResearcherId = function (pool, researchId) {
 
       const deleteResearcherQuery = `
           DELETE FROM researches
-          WHERE rid = ${researchId}
+          WHERE rid = '${researchId}'
         `;
 
       await client.query(deleteResearcherQuery).catch((e) => {

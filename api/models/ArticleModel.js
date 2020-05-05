@@ -118,9 +118,9 @@ exports.updateArticles = function (pool, frontArticle) {
       let query = `
         INSERT INTO articles (title,pub_year,url,citation,fid) values (
           '${partialArticle.title}',
-          ${partialArticle.publishYear},
+          '${partialArticle.publishYear}',
           '${partialArticle.url}',
-          ${partialArticle.citations},
+          '${partialArticle.citations}',
           '${partialArticle.fieldID}'
         ) RETURNING aid
       `;
@@ -250,7 +250,7 @@ exports.updateArticleByArticleId = function (pool, articleId, updateObj) {
       const updateArticleQuery = `
         UPDATE articles 
         SET ${attributeUpdateList}
-        WHERE aid = ${articleId}
+        WHERE aid = '${articleId}'
       `;
 
       await client.query(updateArticleQuery).catch((e) => {
@@ -278,7 +278,7 @@ exports.deleteArticleByArticleId = function (pool, articleId) {
 
       const deleteArticleQuery = `
         DELETE FROM articles
-        WHERE aid = ${articleId}
+        WHERE aid = '${articleId}'
       `;
 
       await client.query(deleteArticleQuery).catch((e) => {
