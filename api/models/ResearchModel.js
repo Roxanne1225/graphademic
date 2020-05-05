@@ -113,10 +113,10 @@ exports.getResearcherByResearcherName = function (researcherName, pool) {
       });
 
       const researcherIdQuery = `
-          SELECT * 
-          FROM researchers 
-          WHERE name = ${researcherName}
-        `;
+        SELECT * 
+        FROM researchers 
+        WHERE name = '${researcherName}'
+    `;
 
       const result = await client
         .query(researcherIdQuery)
