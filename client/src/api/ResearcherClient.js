@@ -20,3 +20,11 @@ export function updateResearcherByResearcherId(researcherId, updateObject) {
     data: updateObject
   }).then(res => res.data);
 }
+
+export function createResearcher(researcher) {
+  return axios({
+    method: 'POST',
+    url: `/api/researchers/`,
+    data: researcher
+  }).then(res => res.data)
+}

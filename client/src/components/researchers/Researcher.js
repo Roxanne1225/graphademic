@@ -72,7 +72,7 @@ const Researcher = ({ data, onDelete, onUpdate }) => {
               Edit Researcher
             </Button>
             <Button variant='danger' onClick={onDelete}>
-              Delete reseaarcher
+              Delete researcher
             </Button>
           </div>
         )
