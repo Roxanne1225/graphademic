@@ -3,7 +3,7 @@ exports.getArticlesBySubject = function (articleSubject, driver) {
   return new Promise(async (resolve, reject) => {
     const session = driver.session();
     //TODO
-    articleSubject = '.*' + toUpper(articleSubject) + '.*';
+    articleSubject = '.*' + articleSubject.toUpperCase() + '.*';
     const articleSubjectQuery = `MATCH (a:Article)<-[:cites]-(b:Article) \
     WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject} \
     RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations' \
