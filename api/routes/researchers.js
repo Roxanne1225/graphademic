@@ -78,7 +78,7 @@ router.put("/:researcherId", async (req, res) => {
 router.delete("/:researcherId", async (req, res) => {
   const researcherId = req.params.researcherId;
 
-  await ResearcherModel.deleteresearcherByresearcherId(
+  await ResearcherModel.deleteResearcherByResearcherId(
     pool,
     researcherId
   ).catch((e) => {

@@ -200,7 +200,7 @@ exports.deleteResearcherByResearcherId = function (pool, researchId) {
       });
 
       const deleteResearcherQuery = `
-          DELETE FROM researches
+          DELETE FROM researchers
           WHERE rid = '${researchId}'
         `;
 
