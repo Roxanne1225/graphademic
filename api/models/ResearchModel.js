@@ -86,16 +86,17 @@ exports.updateresearchers = function (pool, frontResearcher) {
       keys.forEach((key) => {
         partialResearcher[key] = frontResearcher[key];
       });
-      await client.query("BEGIN");
       let query = `
-          INSERT INTO researchers (institute,name,url,picture_url) values (
+          INSERT INTO researchers (institute,name,picture_url) values (
             '${partialResearcher.institute}',
             '${partialResearcher.name}',
             '${partialResearcher.picture_url}'
           ) RETURNING rid
         `;
+      const result = await client.query(query)
+      const researcher = result.rows[0]
       client.release();
-      resolve();
+      resolve(researcher);
     } catch (e) {
       console.log(e);
       reject();
