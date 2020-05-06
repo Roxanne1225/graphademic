@@ -18,7 +18,14 @@ const STATES = {
   EDIT_FAILED: 'EDIT_FAILED'
 }
 
-const Article = ({ article, articleInfo, onUpdate, onDelete }) => {
+const Article = ({
+  article,
+  articleInfo,
+  onUpdate,
+  onDelete,
+  allowUpdating = true,
+  allowDeletion = true
+}) => {
   const [uiState, setUiState] = useState(STATES.VIEWING)
 
   const [articleValue, setArticleValue] = useState(
@@ -85,12 +92,20 @@ const Article = ({ article, articleInfo, onUpdate, onDelete }) => {
             <p>Year published: {article.pub_year}</p>
             <p>FieldID: {article.fid}</p>
             <p>Citations: {article.citation}</p>
-            <Button className='mr-1' onClick={() => setUiState(STATES.EDITING)}>
-              Edit Article
-            </Button>
-            <Button variant='danger' onClick={() => onDelete()}>
-              Delete article
-            </Button>
+            {
+              allowUpdating && (
+                <Button className='mr-1' onClick={() => setUiState(STATES.EDITING)}>
+                  Edit Article
+                </Button>
+              )
+            }
+            {
+              allowDeletion && (
+                <Button variant='danger' onClick={() => onDelete()}>
+                  Delete article
+                </Button>
+              )
+            }
           </div>
         )
       }

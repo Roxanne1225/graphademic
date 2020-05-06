@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import FormControl from 'react-bootstrap/FormControl'
 import Row from 'react-bootstrap/Row'
@@ -27,15 +28,17 @@ const ExploreContainer = () => {
       const links = data.links
         .filter(({ source, target }) => articles.has(source) && articles.has(target))
 
-      console.log({
-        nodes,
-        links
-      })
       setData({
         nodes,
         links
       })
     })
+  }
+
+  const [selectedArticleTitle, setSelectedArticleTitle] = useState(undefined)
+  const handleArticleSelect = (val) => {
+    const articleTitle = val.title
+    setSelectedArticleTitle(articleTitle)
   }
 
   return (
@@ -60,11 +63,25 @@ const ExploreContainer = () => {
               height: '50vh',
               width: '100%'
             }}>
-              <GraphVisualization data={data} />
+              <GraphVisualization
+                data={data}
+                onSelect={handleArticleSelect}
+              />
             </div>
           ) : <h5 className='text-center pt-2w'>No results.</h5>
         }
       </Row>
+      {
+        selectedArticleTitle && (
+          <Row className='pt-2'>
+            <Card style={{ width: '100%' }}>
+              <Card.Body>
+                <h5>{selectedArticleTitle}</h5>
+              </Card.Body>
+            </Card>
+          </Row>
+        )
+      }
     </Container>
   )
 }

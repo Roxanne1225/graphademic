@@ -40,8 +40,9 @@ const GraphVisualization = React.memo(({
         zoom={true}
         simulationOptions={{ ...dimensions, alpha: 1 }}
         labelAttr="label"
-        onSelectNode={(node) => console.log(node)}
+        onSelectNode={(e, val) => onSelect(val)}
         radiusMargin={20}
+        opacityFactor={1.7}
         highlightDependencies
       >
         {
@@ -61,7 +62,7 @@ const GraphVisualization = React.memo(({
         )}
 
       </InteractiveForceGraph>
-    </div>
+    </div >
   )
 })
 
