@@ -43,7 +43,7 @@ const ExploreContainer = () => {
       <Row>
         <InputGroup className="mb-3">
           <InputGroup.Prepend>
-            <InputGroup.Text>Keyword</InputGroup.Text>
+            <InputGroup.Text>Keyword:</InputGroup.Text>
           </InputGroup.Prepend>
           <FormControl value={subject} onChange={e => setSubject(e.target.value)} />
           <InputGroup.Append>
@@ -55,8 +55,10 @@ const ExploreContainer = () => {
         {
           data ? (
             <div style={{
-              border: '1px solid black',
-              borderRadius: '.5em'
+              border: '1px solid #A0A0A0',
+              borderRadius: '.5em',
+              height: '50vh',
+              width: '100%'
             }}>
               <GraphVisualization data={data} />
             </div>

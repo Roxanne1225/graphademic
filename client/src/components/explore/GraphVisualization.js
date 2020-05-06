@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'
 
 const COLORS = [
@@ -22,35 +22,46 @@ const GraphVisualization = React.memo(({
   data,
   onSelect
 }) => {
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0 })
+  useEffect(() => {
+    const boundingRect = container.current.getBoundingClientRect()
+    const { height, width } = boundingRect
 
-  console.log(data)
+    setDimensions({
+      height,
+      width
+    })
+  }, [])
 
+  const container = useRef()
   return (
-    <InteractiveForceGraph
-      zoom={true}
-      simulationOptions={{ height: 500, width: 1000, alpha: 1 }}
-      labelAttr="label"
-      onSelectNode={(node) => console.log(node)}
-      radiusMargin={20}
-      highlightDependencies
-    >
-      {
-        data.nodes.map(node =>
-          <ForceGraphNode
-            node={node}
-            key={node.id}
-            fill={pickRandomColor()}
-          />)
-      }
-      {data.links.map(link =>
-        <ForceGraphLink
-          id={`${link.source}-> ${link.target}`}
-          key={`${link.source} -> ${link.target}`}
-          link={link}
-        />
-      )}
+    <div ref={container} style={{ height: '100%', width: '100%' }}>
+      <InteractiveForceGraph
+        zoom={true}
+        simulationOptions={{ ...dimensions, alpha: 1 }}
+        labelAttr="label"
+        onSelectNode={(node) => console.log(node)}
+        radiusMargin={20}
+        highlightDependencies
+      >
+        {
+          data.nodes.map(node =>
+            <ForceGraphNode
+              node={node}
+              key={node.id}
+              fill={pickRandomColor()}
+            />)
+        }
+        {data.links.map(link =>
+          <ForceGraphLink
+            id={`${link.source}-> ${link.target}`}
+            key={`${link.source} -> ${link.target}`}
+            link={link}
+          />
+        )}
 
-    </InteractiveForceGraph>
+      </InteractiveForceGraph>
+    </div>
   )
 })
 
