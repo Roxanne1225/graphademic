@@ -2,6 +2,12 @@ import axios from 'axios'
 
 import { articleFixture } from '../fixtures/articles'
 
+export function fetchGraphByArticleSubject(articleSubject) {
+  return axios
+    .get(`/api/articles/byArticleSubject/${articleSubject}`)
+    .then(res => res.data)
+}
+
 export function fetchAuthorAndFieldInfoByArticleTitle(articleName) {
   return axios
     .get(`/api/articles?articleName=${articleName}`)

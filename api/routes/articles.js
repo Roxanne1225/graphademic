@@ -18,7 +18,11 @@ var graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
 
-var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser,graphenedbPass));
+var driver = neo4j.driver(
+  graphenedbURL,
+  neo4j.auth.basic(graphenedbUser, graphenedbPass),
+  { encrypted: true }
+);
 
 // AF search by subject, data visiualization
 router.get("/byArticleSubject/:articleSubject", async (req, res) => {

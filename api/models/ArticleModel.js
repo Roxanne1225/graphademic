@@ -4,22 +4,35 @@ exports.getArticlesBySubject = function (articleSubject, driver) {
     const session = driver.session();
     //TODO
     articleSubject = '.*' + articleSubject.toUpperCase() + '.*';
-    const articleSubjectQuery = `MATCH (a:Article)<-[:cites]-(b:Article) \
-    WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject} \
-    RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations' \
-    ORDER BY citations DESC \
-    LIMIT {limit}`;
+    const articleSubjectQuery = `
+      MATCH (a:Article)<-[:cites]-(b:Article) 
+      WHERE toUpper(a.subject) =~{subject} OR toUpper(b.subject) =~{subject}
+      RETURN a.title AS articleTitle, id(a) AS articleId, collect(id(b)) AS cites, count(*) as citations
+      ORDER BY citations DESC 
+      LIMIT {limit}
+    `;
     try {
-      const result = await session.readTransaction(tx =>
-        tx.run(articleSubjectQuery, { subject: articleSubject, limit: 100 })
+      const result = await session.writeTransaction(tx =>
+        tx.run(articleSubjectQuery, { subject: articleSubject, limit: 200 })
       );
+
       const records = result.records;
       var nodes = [], links = [];
+
       records.forEach(res => {
-        nodes.push({ id: res.get('articleId'), title: res.get('articleTitle'), size: res.get('citations') });
-        res.get('cites').forEach(src => {
-          links.push({ source: src, target: res.get('articleId') });
+        nodes.push({
+          id: res.get('articleId').toNumber(),
+          title: res.get('articleTitle'),
+          size: res.get('citations').toNumber()
         });
+
+        res.get('cites').forEach(src => {
+          links.push({
+            source: src.toNumber(),
+            target: res.get('articleId').toNumber()
+          });
+        });
+
       });
       resolve({ nodes: nodes, links: links });
     } catch (e) {
