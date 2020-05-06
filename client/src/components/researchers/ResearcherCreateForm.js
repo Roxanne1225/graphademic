@@ -34,7 +34,7 @@ const ResearcherCreateForm = ({ onCreate }) => {
             <Form.Control
               onChange={makeHandleChange("name", "string")}
               type='text'
-              placeholder='enter a Name'
+              placeholder='enter a title'
             />
           </Form.Group>
 
@@ -43,7 +43,7 @@ const ResearcherCreateForm = ({ onCreate }) => {
             <Form.Control
               onChange={makeHandleChange("institute", "string")}
               type='text'
-              placeholder='enter a Institute'
+              placeholder='enter a title'
             />
           </Form.Group>
 
@@ -52,7 +52,7 @@ const ResearcherCreateForm = ({ onCreate }) => {
             <Form.Control
               onChange={makeHandleChange("picture_url", "string")}
               type='text'
-              placeholder='enter a PictureURL'
+              placeholder='enter a title'
             />
           </Form.Group>
 

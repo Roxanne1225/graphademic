@@ -86,7 +86,7 @@ const ArticleCreateForm = ({ onCreate }) => {
             <Form.Control
               onChange={makeHandleChange("fieldID", "integer")}
               type='text'
-              placeholder='enter the Field ID'
+              placeholder='enter the number of citations this article has'
             />
           </Form.Group>
 
